@@ -9,6 +9,8 @@ module.exports = app => {
 
   controller.getOpenedIssues = (req, res) => {
 
+    console.log("user id: ", req.userId)
+
     db.GetSummary((err, result) => {
         if (err) {
             return res.status(500).json({message: `Internal Server Error`}) 

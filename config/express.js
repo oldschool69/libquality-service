@@ -2,8 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('config');
 const consign = require('consign');
-const db = require('./database')
+const db = require('./database');
 const fetchData = require('../api/data/fechExternalData');
+require("dotenv-safe").config();
 
 module.exports = () => {
     const app = express();
