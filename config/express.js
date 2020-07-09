@@ -23,6 +23,7 @@ module.exports = () => {
 
     // db.createTables((error) => {
     //     if (!error){
+    //         // Retrieve issues from all projects and populate database
     //         const projects = config.get("projects")
     //         if (projects != null) {
     //             for (i = 0; i < projects.length; i++) {

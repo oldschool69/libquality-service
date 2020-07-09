@@ -20,11 +20,11 @@ methods.createTables = (callback) => {
             conn.end();
             return callback(error);
         }
-        console.log('Database tables created with success');
+        console.log('ProjectIssues table dropped');
     });
         
 
-    const sql = "CREATE TABLE IF NOT EXISTS ProjectIssues (\n"+
+    let sql = "CREATE TABLE IF NOT EXISTS ProjectIssues (\n"+
                 "issue_id int NOT NULL,\n"+
                 "project_name varchar(150) NOT NULL,\n"+
                 "created_date datetime,\n"+
@@ -39,10 +39,56 @@ methods.createTables = (callback) => {
             conn.end();
             return callback(error)
         }
-        console.log('Database tables created with success');
+        console.log('ProjectIssues table created');
+    });
+
+    conn.query("DROP TABLE IF EXISTS Users;", function (error, results, fields){
+        if(error) { 
+            console.log(error);
+            conn.end();
+            return callback(error);
+        }
+        console.log('Users table dropped');
+    });
+
+
+    sql = "CREATE TABLE IF NOT EXISTS Users (\n"+
+            "user_id int NOT NULL,\n"+
+            "user_name varchar(150) NOT NULL,\n"+
+            "user_email varchar(200) NOT NULL,\n"+
+            "user_account varchar(30) NOT NULL,\n"+
+            "user_pwd varchar(30) NOT NULL,\n"+
+            "PRIMARY KEY (user_id)\n"+
+            ");";
+
+    conn.query(sql, function (error, results, fields){
+        if(error) { 
+            console.log(error);
+            conn.end();
+            return callback(error)
+        }
+        console.log('Users table created with success');
+    });
+    
+    sql = `INSERT INTO Users SET 
+           user_id=666, 
+           user_name="Flavio",
+           user_email="flavio.marcondes@gmail.com",
+           user_account="oldschool69",
+           user_pwd="123456"`;
+
+    
+    conn.query(sql, function (error, results, fields){
+        if(error) { 
+            console.log(error);
+            conn.end();
+            return
+        }
+        console.log('user inserted on database');
         conn.end();
         return callback();
-    });
+    });        
+        
 };
 
 methods.TestInsert = () => {
@@ -142,7 +188,26 @@ methods.GetSummary = (callback) => {
         callback(null, results)
     });
 
+}
+
+methods.GetUserInfo = (userAccount, callback) => {
+
+    const conn = mysql.createConnection(dbInfo);
+    
+    var query = `SELECT user_id, user_account, user_pwd FROM Users WHERE user_account = '${userAccount}'`;
+
+    conn.query(query, function (error, results, fields){
+        if(error) { 
+            console.log(error);
+            conn.end();
+            return callback(error, null)
+        }
+        conn.end();
+        callback(null, results)
+    });
+
 } 
+
 
 
 module.exports = methods;
