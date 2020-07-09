@@ -1,5 +1,15 @@
 {
     "server": {
       "port" : 8080
-    }
+    },
+    "projects": [
+        { 
+            "name": "react",
+            "company": "facebook"
+        }, 
+        { 
+            "name": "angular",
+            "company": "angular"
+        }
+    ]
 }

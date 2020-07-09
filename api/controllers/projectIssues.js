@@ -1,18 +1,67 @@
 const Rx = require('rxjs/Rx');
 const { Observable } = require('rxjs/Observable');
-const { map, filter, toArray } = require('rxjs/operators');
 const db = require('../../config/database');
-const c = require('config');
-const { GetSummary } = require('../../config/database');
+const config = require('config');
 
 module.exports = app => {
   const getIssuesByProject = app.data.externalAPI.getIssuesByProject
   const controller = {};
- 
-  controller.getOpenedIssues = (req, res) => {
-    var projectName = req.params.project_name;
-    db.GetSummary(projectName, (err, result) => {
 
+  controller.getOpenedIssues = (req, res) => {
+
+    db.GetSummary((err, result) => {
+        if (err) {
+            return res.status(500).json({message: `Internal Server Error`}) 
+        }
+
+        const projects = config.get("projects")
+        const obs$ = Observable.from(result)
+        let masterSummary = []
+
+        for (var i = 0; i < projects.length; i++) {
+            console.log(projects[i].name)
+            obs$
+            .filter(issue => issue.project_name === projects[i].name)
+            .map(issue => {
+                var creationDate = new Date(issue.created_date);
+                var now = new Date();
+                const diffTime = now.getTime() - creationDate.getTime();
+                const age = Math.ceil(diffTime / (1000 * 3600 * 24)); 
+                issue.age = age;
+                return issue;
+            })
+            .toArray()
+            .map(arr =>  {
+                if (arr == null || arr.length == 0) {
+                    return null
+                }
+                var resp = computeStd(arr);
+                return {
+                    project_name: arr[0].project_name,
+                    num_issues: arr.length,
+                    avg_age: resp.avg,
+                    std_age: resp.std
+                };
+            })
+            .toArray()
+            .subscribe(summary => {
+                if (summary[0] != null) {
+                    masterSummary.push(summary)
+                }
+            }) 
+        }
+
+        res.status(200).json(masterSummary);
+
+    });
+  }
+ 
+  controller.getOpenedIssuesByProject = (req, res) => {
+    var projectName = req.params.project_name;
+    db.GetSummaryByProject(projectName, (err, result) => {
+        if (err) {
+            return res.status(500).json({message: `Internal Server Error`}) 
+        }
         const obs$ = Observable.from(result);
 
         obs$.filter(issue => issue.project_name === projectName)
@@ -26,17 +75,23 @@ module.exports = app => {
         })
         .toArray()
         .map(arr =>  {
-            var res = computeStd(arr);
+            if (arr == null || arr.length == 0) {
+                return null
+            }
+            var resp = computeStd(arr);
             return {
                 project_name: arr[0].project_name,
-                num_issus: arr.length,
-                avg_age: res.avg,
-                std_age: res.std
+                num_issues: arr.length,
+                avg_age: resp.avg,
+                std_age: resp.std
             };
 
         })
         .toArray()
         .subscribe(summary => {
+            if (summary[0] == null) {
+                return res.status(404).json({message: "Not Found"});    
+            }
             res.status(200).json(summary); 
         }, (error) => {
             if (error) {
@@ -57,7 +112,7 @@ module.exports = app => {
     arr.map(value => {
         sum += value.age;
     })
-    avg = sum / arr.length
+    avg = Math.ceil(sum / arr.length)
     arr.map(value => {
         sumStd += Math.pow(value.age - avg, 2)   
     })

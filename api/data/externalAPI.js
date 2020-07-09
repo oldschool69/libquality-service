@@ -2,12 +2,11 @@ const request = require('request');
 const methods = {}
 
 
-methods.getIssuesByProject = (projectName, page) => {
-    console.log("Called requestExternalAPI function: ", projectName);
+methods.getIssuesByProject = (project, page) => {
 
     return new Promise((resolve, reject) => {
         request({
-            url: `https://api.github.com/repos/facebook/react/issues?state=open&per_page=100&page=${page}`,
+            url: `https://api.github.com/repos/${project.company}/${project.name}/issues?state=open&per_page=100&page=${page}`,
             headers: {
                 'Accept': 'application/vnd.github.v3+json',
                 "user-agent": "libquality-service"

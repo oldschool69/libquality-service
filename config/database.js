@@ -26,12 +26,11 @@ methods.createTables = (callback) => {
 
     const sql = "CREATE TABLE IF NOT EXISTS ProjectIssues (\n"+
                 "issue_id int NOT NULL,\n"+
-                "project_id int NOT NULL,\n"+
                 "project_name varchar(150) NOT NULL,\n"+
                 "created_date datetime,\n"+
                 "updated_date datetime,\n"+
                 "closed_date datetime,\n"+
-                "PRIMARY KEY (issue_id)\n"+
+                "PRIMARY KEY (issue_id, project_name)\n"+
                 ");";
     
     conn.query(sql, function (error, results, fields){
@@ -57,7 +56,7 @@ methods.TestInsert = () => {
         createdDate.setDate(createdDate.getDate() + i);
 
         var query = `INSERT INTO ProjectIssues SET issue_id=${i}, 
-                    project_id=1, project_name="react", created_date=${conn.escape(createdDate)}`;
+                        project_name="react", created_date=${conn.escape(createdDate)}`;
     
         conn.query(query, function (error, results, fields){
             if(error) { 
@@ -71,7 +70,7 @@ methods.TestInsert = () => {
     }
 }
 
-methods.AddIssues = (pages) => {
+methods.AddIssues = (projectName, pages) => {
 
     const conn = mysql.createConnection(dbInfo);
 
@@ -86,7 +85,7 @@ methods.AddIssues = (pages) => {
                     console.log(issue)
                     var createdDate = new Date(issue.created_at);
                     var q = `INSERT INTO ProjectIssues SET issue_id=${issue.id}, 
-                        project_name="react", created_date=${conn.escape(createdDate)}`;
+                        project_name='${projectName}', created_date=${conn.escape(createdDate)}`;
                     conn.query(q, function (error, results, fields) {
                         if (error) {
                           return conn.rollback(function() {
@@ -109,10 +108,10 @@ methods.AddIssues = (pages) => {
         });
 }
 
-methods.GetSummary = (projectName, callback) => {
+methods.GetSummaryByProject = (projectName, callback) => {
 
     const conn = mysql.createConnection(dbInfo);
-
+    
     var query = `SELECT * FROM ProjectIssues WHERE project_name = '${projectName}'`;
 
     conn.query(query, function (error, results, fields){
@@ -125,7 +124,26 @@ methods.GetSummary = (projectName, callback) => {
         callback(null, results)
     });
 
+}
+
+methods.GetSummary = (callback) => {
+
+    const conn = mysql.createConnection(dbInfo);
+    
+    var query = `SELECT * FROM ProjectIssues`;
+
+    conn.query(query, function (error, results, fields){
+        if(error) { 
+            console.log(error);
+            conn.end();
+            return callback(error, null)
+        }
+        conn.end();
+        callback(null, results)
+    });
+
 } 
+
 
 module.exports = methods;
 

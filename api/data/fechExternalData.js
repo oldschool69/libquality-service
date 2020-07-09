@@ -5,9 +5,9 @@ const db = require('../../config/database')
 
 var methods = {}
 
-methods.getOpenedIssues = () => {
+methods.getOpenedIssues = (project) => {
 
-    const r = request("https://api.github.com/repos/facebook/react/issues?state=open&per_page=100", {
+    const r = request(`https://api.github.com/repos/${project.company}/${project.name}/issues?state=open&per_page=100`, {
         headers: {
             'Accept': 'application/vnd.github.v3+json',
             "user-agent": "libquality-service"
@@ -25,13 +25,13 @@ methods.getOpenedIssues = () => {
         var promisses = []
     
         for (var page = 1; page <= totalPages; page++) {
-            promisses.push(externalAPI.getIssuesByProject("react", page));
+            promisses.push(externalAPI.getIssuesByProject(project, page));
         }
     
         Promise.all(promisses).then(data => {
             console.log("data: ", data) 
             try {
-                db.AddIssues(data)
+                db.AddIssues(project.name, data)
             } catch(error) {
                 console.log(error)
             } 

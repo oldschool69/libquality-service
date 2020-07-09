@@ -20,12 +20,16 @@ module.exports = () => {
         .then('routes')
         .into(app);
 
-    db.createTables((error) => {
-        if (!error){
-            db.TestInsert();
-            //fetchData.getOpenedIssues();      
-        }
-    });
+    // db.createTables((error) => {
+    //     if (!error){
+    //         const projects = config.get("projects")
+    //         if (projects != null) {
+    //             for (i = 0; i < projects.length; i++) {
+    //                 fetchData.getOpenedIssues(projects[i]);      
+    //             }
+    //         }
+    //     }
+    // });
     
 
     return app;
