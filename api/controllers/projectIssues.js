@@ -23,11 +23,7 @@ module.exports = app => {
             obs$
             .filter(issue => issue.project_name === projects[i].name)
             .map(issue => {
-                var creationDate = new Date(issue.created_date);
-                var now = new Date();
-                const diffTime = now.getTime() - creationDate.getTime();
-                const age = Math.ceil(diffTime / (1000 * 3600 * 24)); 
-                issue.age = age;
+                issue.age = getAgeInDays(issue.created_date);
                 return issue;
             })
             .toArray()
@@ -66,11 +62,7 @@ module.exports = app => {
 
         obs$.filter(issue => issue.project_name === projectName)
         .map(issue => {
-            var creationDate = new Date(issue.created_date);
-            var now = new Date();
-            const diffTime = now.getTime() - creationDate.getTime();
-            const age = Math.ceil(diffTime / (1000 * 3600 * 24)); 
-            issue.age = age;
+            issue.age = getAgeInDays(issue.created_date);
             return issue;
         })
         .toArray()
@@ -120,6 +112,14 @@ module.exports = app => {
     std = Math.ceil(Math.sqrt(avgStd))
     
     return { std, avg } 
+  }
+
+  getAgeInDays = (createdDate) => {
+    var creationDate = new Date(createdDate);
+    var now = new Date();
+    const diffTime = now.getTime() - creationDate.getTime();
+    const age = Math.ceil(diffTime / (1000 * 3600 * 24)); 
+    return age;
   }
 
   return controller;
