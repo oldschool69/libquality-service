@@ -28,7 +28,7 @@ methods.createTables = (callback) => {
                 "issue_id int NOT NULL,\n"+
                 "project_id int NOT NULL,\n"+
                 "project_name varchar(150) NOT NULL,\n"+
-                "crated_date datetime,\n"+
+                "created_date datetime,\n"+
                 "updated_date datetime,\n"+
                 "closed_date datetime,\n"+
                 "PRIMARY KEY (issue_id)\n"+
@@ -48,24 +48,27 @@ methods.createTables = (callback) => {
 
 methods.TestInsert = () => {
 
-    const conn = mysql.createConnection(dbInfo);
-    var createdDate = new Date('2020-06-30T19:18:38Z');
 
-    var query = `INSERT INTO ProjectIssues SET issue_id=2, 
-                project_id=1, project_name="react", crated_date=${conn.escape(createdDate)}`;
+    for (var i = 1; i <= 5; i++) {
 
-    conn.query(query, function (error, results, fields){
-        if(error) { 
-            console.log(error);
+        const conn = mysql.createConnection(dbInfo);
+
+        var createdDate = new Date('2020-06-30T19:18:38Z');
+        createdDate.setDate(createdDate.getDate() + i);
+
+        var query = `INSERT INTO ProjectIssues SET issue_id=${i}, 
+                    project_id=1, project_name="react", created_date=${conn.escape(createdDate)}`;
+    
+        conn.query(query, function (error, results, fields){
+            if(error) { 
+                console.log(error);
+                conn.end();
+                return
+            }
+            console.log('Test data added on database');
             conn.end();
-            return
-        }
-        console.log('Database tables created with success');
-        conn.end();
-    });
-
-
-
+        });
+    }
 }
 
 methods.AddIssues = (pages) => {
@@ -105,6 +108,24 @@ methods.AddIssues = (pages) => {
             });
         });
 }
+
+methods.GetSummary = (projectName, callback) => {
+
+    const conn = mysql.createConnection(dbInfo);
+
+    var query = `SELECT * FROM ProjectIssues WHERE project_name = '${projectName}'`;
+
+    conn.query(query, function (error, results, fields){
+        if(error) { 
+            console.log(error);
+            conn.end();
+            return callback(error, null)
+        }
+        conn.end();
+        callback(null, results)
+    });
+
+} 
 
 module.exports = methods;
 

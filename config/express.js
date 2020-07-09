@@ -22,11 +22,10 @@ module.exports = () => {
 
     db.createTables((error) => {
         if (!error){
-            db.TestInsert();      
+            db.TestInsert();
+            //fetchData.getOpenedIssues();      
         }
     });
-    //db.TestInsert();
-    //fetchData.getOpenedIssues();
     
 
     return app;
