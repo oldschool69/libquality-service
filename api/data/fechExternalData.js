@@ -10,22 +10,22 @@ methods.getOpenedIssues = (project) => {
     const r = request(`https://api.github.com/repos/${project.company}/${project.name}/issues?state=open&per_page=100`, {
         headers: {
             'Accept': 'application/vnd.github.v3+json',
-            "user-agent": "libquality-service"
+            "user-agent": "oldschool69"
         },
         json: true,
     });
     r.on('response', response => {
-        const link = response.headers["link"];
+        const link = response.headers["link"]
         r.abort();
         if (link == null) {
-            console.log("Error getting header information from API");
-            return;
+            console.log("Error getting header information from API")
+            return
         }
         var totalPages = getTotalPages(link) 
         var promisses = []
     
         for (var page = 1; page <= totalPages; page++) {
-            promisses.push(externalAPI.getIssuesByProject(project, page));
+            promisses.push(externalAPI.getIssuesByProject(project, page))
         }
     
         Promise.all(promisses).then(data => {
@@ -42,14 +42,14 @@ methods.getOpenedIssues = (project) => {
 }; 
 
 getTotalPages = (link) => {
-    var pos = link.lastIndexOf("page=");
+    var pos = link.lastIndexOf("page=")
     var sub = link.slice(pos + "page=".length)
     var res = ""
     for (var i = 0; sub[i] != '>'; i++) {
         res += sub[i]
     }
     console.log(res)
-    var numPages = 0;
+    var numPages = 0
     if (res != "") {
         try{
             numPages = parseInt(res)
@@ -60,4 +60,4 @@ getTotalPages = (link) => {
     return numPages
 };
 
-module.exports = methods;
+module.exports = methods

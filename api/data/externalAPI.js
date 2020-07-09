@@ -9,7 +9,7 @@ methods.getIssuesByProject = (project, page) => {
             url: `https://api.github.com/repos/${project.company}/${project.name}/issues?state=open&per_page=100&page=${page}`,
             headers: {
                 'Accept': 'application/vnd.github.v3+json',
-                "user-agent": "libquality-service"
+                "user-agent": "oldschool69"
             },
             json: true,
         }, (err, response, body) => {

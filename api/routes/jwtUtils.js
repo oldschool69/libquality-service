@@ -19,5 +19,5 @@ methods.verifyToken = (req, res, next) => {
 
 }
 
-module.exports = methods;       
+module.exports = methods       
      

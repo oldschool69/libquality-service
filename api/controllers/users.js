@@ -6,11 +6,10 @@ module.exports = app => {
 
     controller.userLogin = (req, res, next) => {
 
-        const infoemedAccount = req.body.user;
-        const informedPwd = req.body.pwd;  
+        const infoemedAccount = req.body.user
+        const informedPwd = req.body.pwd
         
         db.GetUserInfo(infoemedAccount, (error, result) => {
-            console.log(result)
             if (result == null || result.length == 0) {
                 return res.status(500).json({message: "Login failure, user not found"})    
             }

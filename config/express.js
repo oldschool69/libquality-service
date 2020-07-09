@@ -7,7 +7,7 @@ const fetchData = require('../api/data/fechExternalData');
 require("dotenv-safe").config();
 
 module.exports = () => {
-    const app = express();
+    const app = express()
 
     app.set('port', process.env.PORT || config.get('server.port'))
 
@@ -19,20 +19,19 @@ module.exports = () => {
         .then('data')
         .then('controllers')
         .then('routes')
-        .into(app);
+        .into(app)
 
-    // db.createTables((error) => {
-    //     if (!error){
-    //         // Retrieve issues from all projects and populate database
-    //         const projects = config.get("projects")
-    //         if (projects != null) {
-    //             for (i = 0; i < projects.length; i++) {
-    //                 fetchData.getOpenedIssues(projects[i]);      
-    //             }
-    //         }
-    //     }
-    // });
+    db.createTables((error) => {
+        if (!error){
+            // Retrieve issues from all projects and populate database
+            const projects = config.get("projects")
+            if (projects != null) {
+                for (i = 0; i < projects.length; i++) {
+                    fetchData.getOpenedIssues(projects[i]);      
+                }
+            }
+        }
+    })
     
-
-    return app;
-};
+    return app
+}

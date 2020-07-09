@@ -5,7 +5,7 @@ const config = require('config');
 
 module.exports = app => {
   const getIssuesByProject = app.data.externalAPI.getIssuesByProject
-  const controller = {};
+  const controller = {}
 
   controller.getOpenedIssues = (req, res) => {
 
@@ -21,12 +21,11 @@ module.exports = app => {
         let masterSummary = []
 
         for (var i = 0; i < projects.length; i++) {
-            console.log(projects[i].name)
             obs$
             .filter(issue => issue.project_name === projects[i].name)
             .map(issue => {
                 issue.age = getAgeInDays(issue.created_date);
-                return issue;
+                return issue
             })
             .toArray()
             .map(arr =>  {
@@ -41,15 +40,22 @@ module.exports = app => {
                     std_age: resp.std
                 };
             })
-            .toArray()
             .subscribe(summary => {
-                if (summary[0] != null) {
+                if (summary != null) {
                     masterSummary.push(summary)
+                }
+            }, (error) => {
+                if (error) {
+                    return res.status(500).json({message: `Internal Server Error`})
                 }
             }) 
         }
 
-        res.status(200).json(masterSummary);
+        if (masterSummary.length > 0) {
+            res.status(200).json(masterSummary)
+        } else {
+            res.status(404).json({message: "Not Found"})
+        }
 
     });
   }
@@ -65,7 +71,7 @@ module.exports = app => {
         obs$.filter(issue => issue.project_name === projectName)
         .map(issue => {
             issue.age = getAgeInDays(issue.created_date);
-            return issue;
+            return issue
         })
         .toArray()
         .map(arr =>  {
@@ -84,7 +90,7 @@ module.exports = app => {
         .toArray()
         .subscribe(summary => {
             if (summary[0] == null) {
-                return res.status(404).json({message: "Not Found"});    
+                return res.status(404).json({message: "Not Found"})    
             }
             res.status(200).json(summary); 
         }, (error) => {
@@ -98,11 +104,11 @@ module.exports = app => {
   }
   
   computeStd = (arr) => {
-    var sum = 0;
-    var avg = 0;
-    var sumStd = 0;
-    var avgStd = 0;
-    var std = 0;
+    var sum = 0
+    var avg = 0
+    var sumStd = 0
+    var avgStd = 0
+    var std = 0
     arr.map(value => {
         sum += value.age;
     })
@@ -117,13 +123,13 @@ module.exports = app => {
   }
 
   getAgeInDays = (createdDate) => {
-    var creationDate = new Date(createdDate);
-    var now = new Date();
-    const diffTime = now.getTime() - creationDate.getTime();
-    const age = Math.ceil(diffTime / (1000 * 3600 * 24)); 
-    return age;
+    var creationDate = new Date(createdDate)
+    var now = new Date()
+    const diffTime = now.getTime() - creationDate.getTime()
+    const age = Math.ceil(diffTime / (1000 * 3600 * 24))
+    return age
   }
 
-  return controller;
+  return controller
   
 }
