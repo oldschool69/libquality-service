@@ -6,32 +6,30 @@ const db = require('./database');
 const fetchData = require('../api/data/fechExternalData');
 require("dotenv-safe").config();
 
-module.exports = () => {
-    const app = express()
+const app = express()
 
-    app.set('port', process.env.PORT || config.get('server.port'))
+app.set('port', process.env.PORT || config.get('server.port'))
 
-    //  Middlewares
-    app.use(bodyParser.json())
+//  Middlewares
+app.use(bodyParser.json())
 
-    // Endpoints
-    consign({cwd: 'api'})
-        .then('data')
-        .then('controllers')
-        .then('routes')
-        .into(app)
+// Endpoints
+consign({ cwd: 'api' })
+    .then('data')
+    .then('controllers')
+    .then('routes')
+    .into(app)
 
-    db.createTables((error) => {
-        if (!error){
-            // Retrieve issues from all projects and populate database
-            const projects = config.get("projects")
-            if (projects != null) {
-                for (i = 0; i < projects.length; i++) {
-                    fetchData.getOpenedIssues(projects[i]);      
-                }
-            }
-        }
-    })
-    
-    return app
-}
+// db.createDatabase((error) => {
+//     if (!error){
+//         // Retrieve issues from all projects and populate database
+//         const projects = config.get("projects")
+//         if (projects != null) {
+//             for (i = 0; i < projects.length; i++) {
+//                 fetchData.getOpenedIssues(projects[i]);      
+//             }
+//         }
+//     }
+// })
+
+module.exports.app = app;

@@ -10,7 +10,7 @@ const dbInfo = {
 
 var methods = {}
 
-methods.createTables = (callback) => {
+methods.createDatabase = (callback) => {
 
     const conn = mysql.createConnection(dbInfo)
 
