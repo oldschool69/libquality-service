@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const db = require('../../config/database');
+const db = require('../../database/mysql');
 
 module.exports = app => {
     const controller = {}

@@ -1,4 +1,4 @@
-const jwtUtils = require('./jwtUtils')
+const jwtUtils = require('../utils/jwtUtils')
 
 module.exports = app => {
     const controller = app.controllers.projectIssues

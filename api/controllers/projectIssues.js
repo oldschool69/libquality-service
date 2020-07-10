@@ -1,10 +1,10 @@
 const Rx = require('rxjs/Rx');
 const { Observable } = require('rxjs/Observable');
-const db = require('../../config/database');
+const db = require('../../database/mysql');
 const config = require('config');
 
 module.exports = app => {
-  const getIssuesByProject = app.data.externalAPI.getIssuesByProject
+  const getIssuesByProject = app.external.githubAPI.getIssuesByProject
   const controller = {}
 
   controller.getOpenedIssues = (req, res) => {

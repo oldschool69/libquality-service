@@ -1,6 +1,6 @@
-const externalAPI = require('./externalAPI');
+const externalAPI = require('./githubAPI');
 const request = require('request')
-const db = require('../../config/database')
+const db = require('../../database/mysql')
 
 
 var methods = {}
@@ -29,7 +29,6 @@ methods.getOpenedIssues = (project) => {
         }
     
         Promise.all(promisses).then(data => {
-            console.log("data: ", data) 
             try {
                 db.AddIssues(project.name, data)
             } catch(error) {
