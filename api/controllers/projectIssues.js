@@ -9,7 +9,15 @@ module.exports = app => {
 
   controller.getOpenedIssues = (req, res) => {
 
-    console.log("user id: ", req.userId)
+    const searchInfo = {
+        userId: req.userId,
+        projectName: "all" 
+    }
+    db.SearchMetricInsert(searchInfo, (error) => {
+        if (error) {
+            console.log("Error on storing search metric")
+        }
+    })
 
     db.GetSummary((err, result) => {
         if (err) {
@@ -62,6 +70,17 @@ module.exports = app => {
  
   controller.getOpenedIssuesByProject = (req, res) => {
     var projectName = req.params.project_name;
+
+    const searchInfo = {
+        userId: req.userId,
+        projectName 
+    }
+    db.SearchMetricInsert(searchInfo, (error) => {
+        if (error) {
+            console.log("Error on storing search metric")
+        }
+    })
+
     db.GetSummaryByProject(projectName, (err, result) => {
         if (err) {
             return res.status(500).json({message: `Internal Server Error`}) 
