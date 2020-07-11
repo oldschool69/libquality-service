@@ -21,7 +21,7 @@ consign({ cwd: 'api' })
     .then('routes')
     .into(app)
 
-// First time running fetching data from external API
+// First time running, data need to be fetched from github API
 fetch()
 
 // if FETCH_MODE is auto, leave scheduler
