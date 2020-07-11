@@ -27,7 +27,7 @@ fetch()
 // if FETCH_MODE is auto, leave scheduler
 // featching data every 15 minutes   
 if (process.env.FETCH_MODE == "auto") {
-    const scheduler = schedule.scheduleJob('*/30 * * * *', () => {
+    const scheduler = schedule.scheduleJob('*/60 * * * *', () => {
         console.log('***SCHEDULER RUNNING***')
         fetch()
     })
