@@ -60,6 +60,14 @@ to authenticate and make requests to the APIs.
 
 ## How to run
 
+Preparing environment:
+
+    1 - Install MySQL
+    2 - Run the following commands from project root folder to create the database:
+
+        cd database	
+        mysql -h localhost -u root -p < createdb.sql
+
 To run the service, go to the project's root directoy and run the command:
 
 ```npm start```
@@ -84,6 +92,9 @@ To execute ```npm test``` command for this project, edit the file
 ```
 
 # Design and technical decisions
+
+The service was built using standard MVC pattern and uses a local MySQL database to store
+data retrieved from GitHub API.
 
 
 ## Why MySQL database?

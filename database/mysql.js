@@ -4,7 +4,7 @@ const c = require('config');
 const dbInfo = {
     host: 'localhost',
     user: 'libqualityadm',
-    password: '123456',
+    password: 'cox69leo',
     database: 'libquality_db'
 };
 
